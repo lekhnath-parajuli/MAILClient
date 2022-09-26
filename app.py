@@ -2,10 +2,10 @@
 
 import webbrowser
 from flask import Flask, request
-from social_authorization.authentication import Microsoft365
+from auth.authentication import Microsoft365
+import base64
 
 
-SCOPES = ['IMAP.AccessAsUser.All']
 PORT = 8080
 HOST = "localhost"
 
@@ -13,23 +13,22 @@ HOST = "localhost"
 app = Flask(__name__)
 
 
-client = Microsoft365(scopes=SCOPES)
-authentication_request_uri = client.get_confidential_client_request_uri()
+client = Microsoft365()
+authentication_request_uri = client.request_access_token_url()
 webbrowser.open(authentication_request_uri, new=False)
 
 
 @app.route('/microsoft365', methods=['GET'])
 def microsoft365():
     '''
-    to get the information register http://localhost:8080/microsoft365
-    in azure as a redirect url  so azure will call this url with the
-    information you asked for
+    here azure will pass the authentication code
+    wiith the help of which we will get access_token
     '''
-    # access_token is not comming as parameter insted its comming as
-    # #access_token like a page jumper so for now you can only see
-    # access_token in browser url after azure redirect you to the
-    # http://localhost:8080/microsoft365 page
-    print(request.url)
+    res = client.get_token(request.args.get('code'))  # type: ignore
+    print('----------------------------------------------------------------')
+    token = res.get('access_token')
+    print(len(base64.b64encode(token.encode('ascii'))))
+    print('----------------------------------------------------------------')
     return 'microsoft365'
 
 

@@ -3,3 +3,4 @@ imapclient >= 2.3.1
 requests >= 2.28.1
 flask >= 2.2.2
 msal >= 1.19.0
+aioauth >= 1.5.0
