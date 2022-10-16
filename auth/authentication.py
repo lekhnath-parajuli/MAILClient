@@ -18,16 +18,16 @@ class Microsoft365:
             client_id=self.client_id,
             client_credential=self.client_secret_value,
             authority=self.authority)
-        url = self.client.get_authorization_request_url(
+        url = self.client.initiate_auth_code_flow(
             scopes=self.scopes,
             redirect_uri=self.redirect_url)
         return url
 
-    def get_token(self, code: str):
-        token = self.client.acquire_token_by_authorization_code(
-            code=code,
-            scopes=self.scopes,
-            redirect_uri=self.redirect_url)
+    def get_token(self, auth_code_flow: dict, auth_response: dict):
+        token = self.client.acquire_token_by_auth_code_flow(
+            auth_code_flow=auth_code_flow,
+            auth_response=auth_response,
+            scopes=self.scopes)
         return token
 
     def oauth2_login(self, user, token):

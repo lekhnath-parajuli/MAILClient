@@ -3,6 +3,7 @@
 import webbrowser
 from flask import Flask, request
 from auth.authentication import Microsoft365
+from auth.oauth2 import Oauth2Client
 
 PORT = 8080
 HOST = "localhost"
@@ -12,8 +13,9 @@ app = Flask(__name__)
 
 
 client = Microsoft365()
-authentication_request_uri = client.request_access_token_url()
-webbrowser.open(authentication_request_uri, new=False)
+auth_code_flow = client.request_access_token_url()
+uri: str = str(auth_code_flow.get('auth_uri'))
+webbrowser.open(uri, new=False)
 
 
 @app.route('/microsoft365', methods=['GET'])
@@ -22,19 +24,17 @@ def microsoft365():
     here azure will pass the authentication code
     wiith the help of which we will get access_token
     '''
-    authorization_code: str = request.args.get('code')
-    print(authorization_code)
-    res = client.get_token(authorization_code)
-    print(res.keys())
-    user: str = res.get('id_token_claims').get('preferred_username')
-    token: str = res.get('access_token')
+    auth_response: dict = request.args
+    response = client.get_token(
+        auth_code_flow=auth_code_flow,
+        auth_response=auth_response
+    )
+    user: str = response.get('id_token_claims').get('preferred_username')
+    access_token: str = response.get('access_token')
     print('----------------------------------------------------------------')
-    print(token)
-    # print(Oauth2Client.generate_oauth2_string(user, token))
-    # client.oauth2_imap_login(user=user, access_token=token)
-    # print(len(base64.b64encode(token.encode('ascii'))))
+    print(Oauth2Client.generate_oauth2_string(user, access_token))
     print('----------------------------------------------------------------')
-    client.oauth2_login(user, token)
+    client.oauth2_login(user, access_token)
     return 'microsoft365'
 
 
