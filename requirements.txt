@@ -5,3 +5,4 @@ flask >= 2.2.2
 msal >= 1.19.0
 aioauth >= 1.5.0
 imaplib2 >= 3.6
+pyyaml >= 6.0

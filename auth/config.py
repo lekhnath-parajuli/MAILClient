@@ -1,7 +1,14 @@
+import yaml
+from pathlib import Path
+
+
+credentials = yaml.safe_load(open(f"{Path(__file__).parent.parent}/credentials.yaml", "r"))
+
+
 class Microsoft365:
-    CLIENT_ID = '1ca437be-f627-497e-acc3-86586497f26a'
-    CLIENT_SECRET_VALUE = '1bX8Q~TIrc8kEE1KK7cguZl6abHqXqNwrXSG2cUP'
-    TENANT_ID = 'e01c2ead-9e0c-4ba9-abc5-65637df647a9'
+    CLIENT_ID = credentials.get('CLIENT_ID')
+    CLIENT_SECRET_VALUE = credentials.get('CLIENT_SECRET_VALUE')
+    TENANT_ID = credentials.get('TENANT_ID')
     REDIRECT_URL = 'http://localhost:8080/microsoft365'
     AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
     SCOPES = ['IMAP.AccessAsUser.All', 'SMTP.Send']
@@ -12,8 +19,6 @@ class Microsoft365:
 class Config:
     TLS_IMAP_PORT = 993
     IMAP_SERVER = 'imap-mail.outlook.com'
-    USERNAME = 'lekhnathparajuli4@gmail.com'
-    PASSWORD = 'wbmoskptxzlybisw'
     MICROSOFT = Microsoft365
 
 

@@ -31,9 +31,11 @@ def microsoft365():
     )
     user: str = response.get('id_token_claims').get('preferred_username')
     access_token: str = response.get('access_token')
+
     print('----------------------------------------------------------------')
     print(Oauth2Client.generate_oauth2_string(user, access_token))
     print('----------------------------------------------------------------')
+
     client.oauth2_login(user, access_token)
     return 'microsoft365'
 

@@ -1,2 +1,4 @@
 .env
 .env_backup
+credentials.yaml
+.vscode
